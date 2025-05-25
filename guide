@@ -1,0 +1,119 @@
+# Google Drive Downloader Script Usage Guide
+
+This guide explains how to use the `download-gdrive.py` Python script to download any publicly shared file from Google Drive, bypassing common issues like web page redirects or "virus scan" warnings for large files.
+
+## Table of Contents
+
+1.  [Introduction](#1-introduction)
+2.  [Prerequisites](#2-prerequisites)
+3.  [Getting the Script](#3-getting-the-script)
+4.  [Understanding Google Drive Links](#4-understanding-google-drive-links)
+5.  [How to Use the Script](#5-how-to-use-the-script)
+    * [Basic Usage: Download to Current Directory](#basic-usage-download-to-current-directory)
+    * [Download to a Specific Directory](#download-to-a-specific-directory)
+    * [Download with a Specific Filename and Path](#download-with-a-specific-filename-and-path)
+6.  [Troubleshooting](#6-troubleshooting)
+
+---
+
+## 1. Introduction
+
+The `download-gdrive.py` script is a simple Python utility designed to facilitate downloading files directly from Google Drive. Standard tools like `wget` or `curl` often struggle with Google Drive's shareable links because they usually point to a web page rather than the direct file content. This script handles the necessary redirects and confirmation tokens (especially for large files) to initiate the download properly.
+
+## 2. Prerequisites
+
+* **Python 3:** You need Python 3 installed on your system. Most modern Linux distributions (including Arch Linux) come with Python 3 by default.
+* **`requests` Python Library:** This script relies on the `requests` library for handling HTTP requests.
+
+    **Installation:**
+    * **On Arch Linux (Recommended for system-wide install):**
+        ```bash
+        sudo pacman -S python-requests
+        ```
+    * **On other Linux distributions or in a Python virtual environment:**
+        ```bash
+        pip install requests
+        ```
+
+## 3. Getting the Script
+
+You can obtain the `download-gdrive.py` script by cloning this repository or by simply copying the file directly.
+
+**Option A: Clone the Repository (Recommended)**
+```bash
+git clone [https://github.com/rainbownx/SimpleArchISO.git](https://github.com/rainbownx/SimpleArchISO.git)
+cd SimpleArchISO
+
+The download-gdrive.py script will be located in this directory.
+
+Option B: Download the Script File Directly
+You can navigate to the download-gdrive.py file on the GitHub repository page (e.g., https://github.com/rainbownx/SimpleArchISO/blob/main/download-gdrive.py), click "Raw," and then save the content to a file named download-gdrive.py on your local machine.
+4. Understanding Google Drive Links
+
+The script works by extracting a unique File ID from a Google Drive shareable link. The most common shareable link formats are:
+
+    https://drive.google.com/file/d/YOUR_FILE_ID/view?usp=sharing
+    https://drive.google.com/uc?id=YOUR_FILE_ID
+
+Make sure the link you provide to the script is a shareable link that allows "anyone with the link" to view or download.
+5. How to Use the Script
+
+Once you have the download-gdrive.py script and the requests library installed, you can run it from your terminal.
+
+Syntax:
+Bash
+
+python download-gdrive.py "YOUR_GOOGLE_DRIVE_LINK" [destination_path_or_filename]
+
+    <google_drive_link>: This is the shareable link to the Google Drive file you want to download. Always enclose the link in double quotes (") to prevent issues with special characters in the URL.
+
+    [destination_path_or_filename]: This argument is optional. It specifies where to save the downloaded file.
+        If omitted: The file will be saved in the current directory (where you run the script from) using its original filename as inferred from Google Drive.
+        If it's an existing directory (e.g., ~/Downloads/): The file will be saved inside that directory, using its original Google Drive filename.
+        If it's a full file path (e.g., /tmp/my_document.pdf): The file will be saved to that exact path with that filename.
+        If it's just a filename (e.g., my_document.pdf): The file will be saved in the current directory with that specified filename.
+
+Examples:
+
+Assume your script is located in your current working directory.
+Basic Usage: Download to Current Directory
+
+This will download the file to the directory you're currently in, using its original Google Drive filename.
+Bash
+
+python download-gdrive.py "[https://drive.google.com/file/d/YOUR_FILE_ID/view?usp=sharing](https://drive.google.com/file/d/YOUR_FILE_ID/view?usp=sharing)"
+
+Download to a Specific Directory
+
+This will download the file into your ~/Downloads/ directory, keeping its original filename.
+Bash
+
+python download-gdrive.py "[https://drive.google.com/file/d/YOUR_FILE_ID/view?usp=sharing](https://drive.google.com/file/d/YOUR_FILE_ID/view?usp=sharing)" ~/Downloads/
+
+Download with a Specific Filename and Path
+
+This will download the file and save it as my_important_file.zip in your /tmp/ directory.
+Bash
+
+python download-gdrive.py "[https://drive.google.com/file/d/YOUR_FILE_ID/view?usp=sharing](https://drive.google.com/file/d/YOUR_FILE_ID/view?usp=sharing)" /tmp/my_important_file.zip
+
+Remember to replace YOUR_FILE_ID in the example links with the actual file ID from your Google Drive link.
+6. Troubleshooting
+
+    python: can't open file 'download-gdrive.py': [Errno 2] No such file or directory:
+    This means the script file is not in the directory where you are running the command from, or you mistyped its name.
+        Ensure you are in the directory where download-gdrive.py is located (e.g., after cd SimpleArchISO/).
+        Double-check the filename (it's download-gdrive.py, with a hyphen).
+        Alternatively, provide the full path to the script: python /path/to/download-gdrive.py "YOUR_LINK"
+
+    ImportError: No module named 'requests':
+    This means the requests Python library is not installed. Refer back to the Prerequisites section to install it using sudo pacman -S python-requests (for Arch) or pip install requests.
+
+    Error: Could not extract file ID from the provided Google Drive link.:
+    The script couldn't find the unique Google Drive file ID in the link you provided. Double-check that the link is a valid shareable Google Drive link and correctly formatted.
+
+    Error downloading file. Status code: 403 (Forbidden) or 404 (Not Found):
+    This usually means the file is not publicly shared, or the link is incorrect. Ensure the file on Google Drive is set to "Anyone with the link" can view/download.
+
+    Error writing file... Permission denied:
+    You are trying to save the file to a location where your user account doesn't have write permissions (e.g., / or /usr/local). Try saving to your home directory (~/) or ~/Downloads/.
